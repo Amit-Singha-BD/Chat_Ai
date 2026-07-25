@@ -1,0 +1,5 @@
+@include('Frontend.Partials.Header')
+@include('Frontend.Partials.Sidebar')
+@include('Frontend.Partials.Navbar')
+@yield('Content')
+@include('Frontend.Partials.Footer')
