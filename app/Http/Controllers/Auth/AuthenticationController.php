@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegistrationRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,11 +11,38 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Throwable;
 
 class AuthenticationController extends Controller {
     public function index(){
         return view('Auth.Pages.Login');
+    }
+
+    public function login(UserLoginRequest $request){
+        try{
+            $credentials = $request->only('email', 'password');
+            $remember = $request->boolean('remember');
+
+            if(Auth::attempt($credentials, $remember)){
+                $request->session()->regenerate();
+                return "login successfuly!";
+                // return redirect()->route('unknown')->with("success", "Login successful.");
+                
+            }
+            return back()->withInput($request->only('email'))
+                         ->withErrors(["email" => "The provided credentials do not match our records.",]);
+            
+        }
+        catch(\Throwable $exception){
+            Log::error('User login failed.', [
+                'email' => $request->email,
+                'error' => $exception->getMessage(),
+                'file'  => $exception->getFile(),
+                'line'  => $exception->getLine(),
+            ]);
+
+            return back()->withInput($request->only('email'))
+                         ->with("error", "Something went wrong. Please try again.");
+        }
     }
 
     public function showRegistrationForm(){
@@ -34,7 +62,7 @@ class AuthenticationController extends Controller {
             Auth::login($user);
             DB::commit();
 
-            return redirect()->route('Unknown')->with("success", "Registration completed successfully.");
+            return redirect()->route('index')->with("success", "Registration completed successfully.");
         }
         catch(\Throwable $exception){
             DB::rollBack();

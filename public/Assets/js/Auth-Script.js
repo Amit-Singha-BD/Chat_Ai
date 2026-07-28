@@ -49,16 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    /* Login Form — visual-only submit feedback */
-    const loginForm = document.getElementById("loginForm");
-    if (loginForm) {
-        loginForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            // Backend integration (Laravel) hooks in here.
-            pulseSubmitButton(document.getElementById("loginSubmitBtn"));
-        });
-    }
-
     function pulseSubmitButton(btn) {
         if (!btn) return;
         btn.style.transform = "scale(0.98)";
@@ -149,16 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 ? "Looks good"
                 : "Enter a valid email address";
             emailHint.className = `field-hint ${valid ? "is-valid" : "is-invalid"}`;
-        });
-    }
-
-    /* Register Form — visual-only submit feedback */
-    const registerForm = document.getElementById("registerForm");
-    if (registerForm) {
-        registerForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            // Backend integration (Laravel) hooks in here.
-            pulseSubmitButton(document.getElementById("registerSubmitBtn"));
         });
     }
 });

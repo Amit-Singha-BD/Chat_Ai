@@ -67,21 +67,28 @@
             <div class="auth-divider">or sign up with email</div>
 
             <!-- Registration Form (UI only — no submission logic) -->
-            <form class="auth-form" id="registerForm" novalidate>
+            <form class="auth-form" id="registerForm" action="{{ route('register.store') }}" method="POST">
+                @csrf
                 <div class="form-group">
                     <label for="fullName" class="auth-label">Full name</label>
                     <div class="input-affix">
                         <i class="bi bi-person" aria-hidden="true"></i>
-                        <input type="text" name="name" id="fullName" class="auth-input" placeholder="Amelia Hart" autocomplete="name">
+                        <input type="text" name="name" id="fullName" class="auth-input @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="Amelia Hart">
                     </div>
+                    @error('name')
+                        <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="form-group">
                     <label for="registerEmail" class="auth-label">Email address</label>
                     <div class="input-affix">
                         <i class="bi bi-envelope" aria-hidden="true"></i>
-                        <input type="email" name="email" id="registerEmail" class="auth-input" placeholder="you@company.com" autocomplete="email">
+                        <input type="email" name="email" id="registerEmail" class="auth-input @error('email') is-invalid @enderror" value="{{ old('email') }}" placeholder="you@company.com">
                     </div>
+                    @error('email')
+                        <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
                     <span class="field-hint" id="emailHint"></span>
                 </div>
 
@@ -89,7 +96,7 @@
                     <label for="registerPassword" class="auth-label">Password</label>
                     <div class="input-affix">
                         <i class="bi bi-lock" aria-hidden="true"></i>
-                        <input type="password" name="password" id="registerPassword" class="auth-input" placeholder="Create a password" autocomplete="new-password">
+                        <input type="password" name="password" id="registerPassword" class="auth-input @error('password') is-invalid @enderror" value="{{ old('password') }}" placeholder="Create a password">
                         <button type="button" class="password-toggle-btn" data-toggle-target="registerPassword" aria-label="Show password">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </button>
@@ -100,8 +107,10 @@
                         <span class="strength-bar"></span>
                         <span class="strength-bar"></span>
                     </div>
-                    <span class="strength-label" id="strengthLabel">Use 8+ characters with a mix of letters, numbers &amp;
-                        symbols</span>
+                    @error('password')
+                        <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                    <span class="strength-label" id="strengthLabel">Use 8+ characters with a mix of letters, numbers &amp; symbols</span>
                 </div>
 
                 <div class="form-group">
