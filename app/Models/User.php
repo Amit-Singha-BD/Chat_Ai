@@ -27,4 +27,9 @@ class User extends Authenticatable {
             'password' => 'hashed',
         ];
     }
+
+    // Relationships
+    public function conversations(){
+        return $this->hasMany(Conversation::class);
+    }
 }
