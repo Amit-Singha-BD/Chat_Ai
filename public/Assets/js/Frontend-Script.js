@@ -45,19 +45,19 @@ document.addEventListener("DOMContentLoaded", () => {
     /* --------------------------------------------------
      3. Form Submit (UI only — no network / no storage)
   -------------------------------------------------- */
-    const chatInputForm = document.getElementById("chatInputForm");
-    if (chatInputForm) {
-        chatInputForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            // Intentionally does nothing beyond UI feedback.
-            // Backend integration (Laravel) will hook in here.
-            triggerSendPulse();
-            textarea.value = "";
-            autoResize();
-            updateSendState();
-            textarea.focus();
-        });
-    }
+    // const chatInputForm = document.getElementById("chatInputForm");
+    // if (chatInputForm) {
+    //     chatInputForm.addEventListener("submit", (e) => {
+    //         e.preventDefault();
+    //         // Intentionally does nothing beyond UI feedback.
+    //         // Backend integration (Laravel) will hook in here.
+    //         triggerSendPulse();
+    //         textarea.value = "";
+    //         autoResize();
+    //         updateSendState();
+    //         textarea.focus();
+    //     });
+    // }
 
     function triggerSendPulse() {
         sendBtn.style.transform = "scale(0.9)";
@@ -121,33 +121,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const conversationItems = document.querySelectorAll(".conversation-item");
     const chatTitleText = document.getElementById("chatTitleText");
 
-    conversationItems.forEach((item) => {
-        item.addEventListener("click", (e) => {
-            // Ignore clicks on the dropdown trigger itself
-            if (e.target.closest(".conv-menu-btn")) return;
-            e.preventDefault();
+    // conversationItems.forEach((item) => {
+    //     item.addEventListener("click", (e) => {
+    //         // Ignore clicks on the dropdown trigger itself
+    //         if (e.target.closest(".conv-menu-btn")) return;
+    //         e.preventDefault();
 
-            conversationItems.forEach((el) => {
-                el.classList.remove("active");
-                el.removeAttribute("aria-current");
-            });
-            item.classList.add("active");
-            item.setAttribute("aria-current", "true");
+    //         conversationItems.forEach((el) => {
+    //             el.classList.remove("active");
+    //             el.removeAttribute("aria-current");
+    //         });
+    //         item.classList.add("active");
+    //         item.setAttribute("aria-current", "true");
 
-            const titleSpan = item.querySelector(".conversation-title");
-            if (titleSpan && chatTitleText) {
-                chatTitleText.textContent = titleSpan.textContent;
-            }
+    //         const titleSpan = item.querySelector(".conversation-title");
+    //         if (titleSpan && chatTitleText) {
+    //             chatTitleText.textContent = titleSpan.textContent;
+    //         }
 
-            // Close mobile offcanvas after selecting a conversation
-            const sidebarEl = document.getElementById("sidebar");
-            const offcanvasInstance =
-                bootstrap.Offcanvas.getInstance(sidebarEl);
-            if (offcanvasInstance && window.innerWidth < 992) {
-                offcanvasInstance.hide();
-            }
-        });
-    });
+    //         // Close mobile offcanvas after selecting a conversation
+    //         const sidebarEl = document.getElementById("sidebar");
+    //         const offcanvasInstance =
+    //             bootstrap.Offcanvas.getInstance(sidebarEl);
+    //         if (offcanvasInstance && window.innerWidth < 992) {
+    //             offcanvasInstance.hide();
+    //         }
+    //     });
+    // });
 
     /* --------------------------------------------------
      7. Suggestion Cards -> Prefill Input (UI only)

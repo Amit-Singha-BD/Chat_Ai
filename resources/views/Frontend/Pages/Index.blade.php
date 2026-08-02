@@ -215,14 +215,15 @@
     <!-- MESSAGE INPUT (sticky)         -->
     <!-- ============================= -->
     <footer class="chat-input-area">
-        <form class="chat-input-form" id="chatInputForm">
+        <form class="chat-input-form" id="chatInputForm" action="{{ route('store') }}" method="POST">
+            @csrf
             <div class="chat-input-wrapper" id="chatInputWrapper">
 
                 <label for="chatTextarea" class="visually-hidden">Message</label>
-                <textarea id="chatTextarea" class="chat-textarea" placeholder="Ask anything..." rows="1"
+                <textarea id="chatTextarea" name="message" class="chat-textarea" placeholder="Ask anything..." rows="1"
                     aria-label="Type your message"></textarea>
 
-                <button type="submit" class="send-btn" id="sendBtn" aria-label="Send message" disabled>
+                <button type="submit" name="submit" class="send-btn" id="sendBtn" aria-label="Send message" disabled>
                     <i class="bi bi-arrow-up" aria-hidden="true"></i>
                 </button>
             </div>
