@@ -239,3 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+document
+.getElementById('conversation_id')
+.value = response.conversation_id;

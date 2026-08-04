@@ -8,14 +8,26 @@ use App\Models\Message;
 use App\Services\GeminiService;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ChatController extends Controller {
     public function __construct(protected GeminiService $geminiService){}
 
     public function view(){
-        return view('Frontend.Pages.index');
+        $conversations = Conversation::where('user_id', 1)->latest('last_message_at')->get();
+        return view('Frontend.Pages.index', [
+            'conversations' => $conversations,
+            'conversation' => null,
+        ]);
     }
 
+    public function show(Conversation $conversation){
+        abort_if($conversation->user_id != 1, 403);
+        $conversations = Conversation::where('user_id', 1)->latest('last_message_at')->get();
+        $conversation->load('messages');
+
+        return view('Frontend.Pages.index', compact('conversations', 'conversation'));
+    }
 
 
     public function store(MessageRequest $request){
@@ -26,12 +38,12 @@ class ChatController extends Controller {
         try{
             // Existing conversation or create new one
             if($request->filled('conversation_id')){
-                $conversation = Conversation::where('id', $request->conversation_id)->where('user_id', auth()->id())->firstOrFail();
+                $conversation = Conversation::where('id', $request->conversation_id)->where('user_id', 1)->firstOrFail();
             }
             else{
                 $conversation = Conversation::create([
-                    'user_id' => auth()->id(),
-                    'title'   => null,
+                    'user_id' => 1,
+                    'title'   => Str::limit($validatedData['message'], 40),
                 ]);
             }
 
@@ -57,21 +69,14 @@ class ChatController extends Controller {
 
             DB::commit();
 
-            return response()->json([
-                'success'         => true,
-                'conversation_id' => $conversation->id,
-                'reply'           => $reply,
-            ]);
+            return redirect()->route('show', $conversation->id);
 
         }
         catch(Exception $e){
 
             DB::rollBack();
 
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
+            return redirect()->route('show', $conversation->id);
         }
     }
 }

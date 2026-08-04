@@ -14,20 +14,21 @@
 
       <!-- New Chat -->
       <div class="sidebar-section">
-          <button class="btn btn-new-chat w-100" type="button" id="newChatBtn">
-              <i class="bi bi-plus-lg" aria-hidden="true"></i>
-              <span>New chat</span>
-          </button>
+        <a href="{{ route('view') }}" class="btn btn-new-chat w-100" id="newChatBtn">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i>
+            New Chat
+        </a>
       </div>
 
       <!-- Conversation List -->
       <nav class="sidebar-section conversation-list-wrap" aria-label="Conversation history">
           <p class="sidebar-label">Today</p>
           <ul class="conversation-list" id="conversationList">
-              <li>
-                  <a href="#" class="conversation-item active" aria-current="true">
+            @foreach ($conversations as $item)
+                <li>
+                  <a href="{{ route('show',$item->id) }}" class="conversation-item {{ isset($conversation) && $conversation->id == $item->id ? 'active' : '' }}">
                       <i class="bi bi-chat-left-text" aria-hidden="true"></i>
-                      <span class="conversation-title">Roadmap strategy for Q3 launch</span>
+                      <span class="conversation-title">{{ $item->title ?? 'Unknown' }}</span>
                       <button class="conv-menu-btn" type="button" aria-label="More options" data-bs-toggle="dropdown"
                           aria-expanded="false">
                           <i class="bi bi-three-dots" aria-hidden="true"></i>
@@ -40,73 +41,8 @@
                       </ul>
                   </a>
               </li>
-              <li>
-                  <a href="#" class="conversation-item">
-                      <i class="bi bi-chat-left-text" aria-hidden="true"></i>
-                      <span class="conversation-title">Brand tone of voice guidelines</span>
-                      <button class="conv-menu-btn" type="button" aria-label="More options" data-bs-toggle="dropdown"
-                          aria-expanded="false">
-                          <i class="bi bi-three-dots" aria-hidden="true"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end conv-dropdown">
-                          <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Rename</a></li>
-                          <li><a class="dropdown-item" href="#"><i class="bi bi-share"></i> Share</a></li>
-                          <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash"></i> Delete</a>
-                          </li>
-                      </ul>
-                  </a>
-              </li>
-
+            @endforeach
               <p class="sidebar-label">Previous 7 Days</p>
-
-              <li>
-                  <a href="#" class="conversation-item">
-                      <i class="bi bi-chat-left-text" aria-hidden="true"></i>
-                      <span class="conversation-title">Investor update — narrative draft</span>
-                      <button class="conv-menu-btn" type="button" aria-label="More options" data-bs-toggle="dropdown"
-                          aria-expanded="false">
-                          <i class="bi bi-three-dots" aria-hidden="true"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end conv-dropdown">
-                          <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Rename</a></li>
-                          <li><a class="dropdown-item" href="#"><i class="bi bi-share"></i> Share</a></li>
-                          <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash"></i> Delete</a>
-                          </li>
-                      </ul>
-                  </a>
-              </li>
-              <li>
-                  <a href="#" class="conversation-item">
-                      <i class="bi bi-chat-left-text" aria-hidden="true"></i>
-                      <span class="conversation-title">API rate limiting strategy</span>
-                      <button class="conv-menu-btn" type="button" aria-label="More options"
-                          data-bs-toggle="dropdown" aria-expanded="false">
-                          <i class="bi bi-three-dots" aria-hidden="true"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end conv-dropdown">
-                          <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Rename</a></li>
-                          <li><a class="dropdown-item" href="#"><i class="bi bi-share"></i> Share</a></li>
-                          <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash"></i>
-                                  Delete</a></li>
-                      </ul>
-                  </a>
-              </li>
-              <li>
-                  <a href="#" class="conversation-item">
-                      <i class="bi bi-chat-left-text" aria-hidden="true"></i>
-                      <span class="conversation-title">Onboarding flow copywriting</span>
-                      <button class="conv-menu-btn" type="button" aria-label="More options"
-                          data-bs-toggle="dropdown" aria-expanded="false">
-                          <i class="bi bi-three-dots" aria-hidden="true"></i>
-                      </button>
-                      <ul class="dropdown-menu dropdown-menu-end conv-dropdown">
-                          <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> Rename</a></li>
-                          <li><a class="dropdown-item" href="#"><i class="bi bi-share"></i> Share</a></li>
-                          <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash"></i>
-                                  Delete</a></li>
-                      </ul>
-                  </a>
-              </li>
           </ul>
       </nav>
 

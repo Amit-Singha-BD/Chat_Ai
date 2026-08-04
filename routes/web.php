@@ -11,3 +11,4 @@ Route::post('register', [AuthenticationController::class, 'register'])->name('re
 
 Route::get('view', [ChatController::class, 'view'])->name('view');
 Route::post('/chat/store', [ChatController::class, 'store'])->name('store');
+Route::get('/chat/show/{conversation}', [ChatController::class, 'show'])->name('show');
