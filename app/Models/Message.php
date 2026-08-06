@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Message extends Model {
     use HasFactory;
 
+    const ROLE_USER = 'user';
+    const ROLE_ASSISTANT = 'assistant';
+
     protected $fillable = [
         'conversation_id',
         'role',

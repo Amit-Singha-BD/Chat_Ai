@@ -133,7 +133,7 @@
     <!-- MESSAGE INPUT (sticky)         -->
     <!-- ============================= -->
     <footer class="chat-input-area">
-        <form class="chat-input-form" id="chatInputForm" action="{{ route('store') }}" method="POST">
+        <form class="chat-input-form" id="chatInputForm" action="{{ route('chat.store') }}" method="POST">
             @csrf
             <input type="hidden" name="conversation_id" id="conversation_id" value="{{ $conversation->id ?? '' }}">
             <div class="chat-input-wrapper" id="chatInputWrapper">

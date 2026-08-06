@@ -14,7 +14,7 @@
 
       <!-- New Chat -->
       <div class="sidebar-section">
-        <a href="{{ route('view') }}" class="btn btn-new-chat w-100" id="newChatBtn">
+        <a href="{{ route('chat.index') }}" class="btn btn-new-chat w-100" id="newChatBtn">
             <i class="bi bi-plus-lg" aria-hidden="true"></i>
             New Chat
         </a>
@@ -26,7 +26,7 @@
           <ul class="conversation-list" id="conversationList">
             @foreach ($conversations as $item)
                 <li>
-                  <a href="{{ route('show',$item->id) }}" class="conversation-item {{ isset($conversation) && $conversation->id == $item->id ? 'active' : '' }}">
+                  <a href="{{ route('chat.show',$item->id) }}" class="conversation-item {{ isset($conversation) && $conversation->id == $item->id ? 'active' : '' }}">
                       <i class="bi bi-chat-left-text" aria-hidden="true"></i>
                       <span class="conversation-title">{{ $item->title ?? 'Unknown' }}</span>
                       <button class="conv-menu-btn" type="button" aria-label="More options" data-bs-toggle="dropdown"

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
 class AuthenticationController extends Controller {
-    public function index(){
+    public function loginView(){
         return view('Auth.Pages.Login');
     }
 
@@ -45,7 +45,7 @@ class AuthenticationController extends Controller {
         }
     }
 
-    public function showRegistrationForm(){
+    public function registerView(){
         return view('Auth.Pages.Registration');
     }
 

@@ -71,7 +71,7 @@
             <div class="auth-divider">or continue with email</div>
 
             <!-- Login Form (UI only — no submission logic) -->
-            <form class="auth-form" id="loginForm" action="{{ route('login') }}" method="POST">
+            <form class="auth-form" id="loginForm" action="{{ route('login.submit') }}" method="POST">
                 @csrf
                 <div class="form-group">
                     <label for="loginEmail" class="auth-label">Email address</label>

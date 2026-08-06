@@ -4,11 +4,13 @@ use App\Http\Controllers\Auth\AuthenticationController;
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [AuthenticationController::class, 'index'])->name('index');
-Route::post('login', [AuthenticationController::class, 'login'])->name('login');
-Route::get('register', [AuthenticationController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [AuthenticationController::class, 'register'])->name('register.store');
+// Authentication Routes
+Route::get('/login', [AuthenticationController::class, 'loginView'])->name('login.view');
+Route::post('/login', [AuthenticationController::class, 'login'])->name('login.submit');
+Route::get('/register', [AuthenticationController::class, 'registerView'])->name('register.view');
+Route::post('/register', [AuthenticationController::class, 'register'])->name('register.store');
 
-Route::get('view', [ChatController::class, 'view'])->name('view');
-Route::post('/chat/store', [ChatController::class, 'store'])->name('store');
-Route::get('/chat/show/{conversation}', [ChatController::class, 'show'])->name('show');
+// Chat Routes
+Route::get('/', [ChatController::class, 'index'])->name('chat.index');
+Route::post('/chat', [ChatController::class, 'store'])->name('chat.store');
+Route::get('/chat/{conversation}', [ChatController::class, 'show'])->name('chat.show');

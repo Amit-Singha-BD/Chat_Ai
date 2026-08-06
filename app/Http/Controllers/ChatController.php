@@ -7,14 +7,18 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Services\GeminiService;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ChatController extends Controller {
-    public function __construct(protected GeminiService $geminiService){}
+    public function __construct(
+        protected GeminiService $geminiService
+    ) {}
 
-    public function view(){
-        $conversations = Conversation::where('user_id', 1)->latest('last_message_at')->get();
+    public function index(){
+        $conversations = Conversation::where('user_id', Auth::id())->latest('last_message_at')->get();
         return view('Frontend.Pages.index', [
             'conversations' => $conversations,
             'conversation' => null,
@@ -22,61 +26,64 @@ class ChatController extends Controller {
     }
 
     public function show(Conversation $conversation){
-        abort_if($conversation->user_id != 1, 403);
-        $conversations = Conversation::where('user_id', 1)->latest('last_message_at')->get();
+        abort_if($conversation->user_id !== Auth::id(), 403);
+
+        $conversations = Conversation::where('user_id', Auth::id())->latest('last_message_at')->get();
         $conversation->load('messages');
 
         return view('Frontend.Pages.index', compact('conversations', 'conversation'));
     }
 
-
     public function store(MessageRequest $request){
-        $validatedData = $request->validated();
-
-        DB::beginTransaction();
+        $validated = $request->validated();
 
         try{
-            // Existing conversation or create new one
-            if($request->filled('conversation_id')){
-                $conversation = Conversation::where('id', $request->conversation_id)->where('user_id', 1)->firstOrFail();
-            }
-            else{
-                $conversation = Conversation::create([
-                    'user_id' => 1,
-                    'title'   => Str::limit($validatedData['message'], 40),
-                ]);
-            }
+            $conversation = DB::transaction(
+                function() use ($request, $validated){
+                    if($request->filled('conversation_id')){
+                        $conversation = Conversation::where('id', $request->conversation_id)->where('user_id', Auth::id())->firstOrFail();
+                    }
+                    else{
+                        $conversation = Conversation::create([
+                            'user_id' => Auth::id(),
+                            'title'   => Str::limit($validated['message'], 40),
+                        ]);
+                    }
 
-            // Save user message
-            Message::create([
-                'conversation_id' => $conversation->id,
-                'role'            => 'user',
-                'content'         => $validatedData['message'],
-            ]);
+                    // Save User Message
+                    $conversation->messages()->create([
+                        'role' => Message::ROLE_USER,
+                        'content' => $validated['message'],
+                    ]);
 
-            // Generate AI response
-            $reply = $this->geminiService->generateResponse($validatedData['message']);
+                    // Generate AI response
+                    $reply = $this->geminiService->generateResponse($validated['message']);
 
-            // Save AI response
-            Message::create([
-                'conversation_id' => $conversation->id,
-                'role'            => 'assistant',
-                'content'         => $reply,
-            ]);
+                    // Save AI Message
+                    $conversation->messages()->create([
+                        'role' => Message::ROLE_ASSISTANT,
+                        'content' => $reply,
+                    ]);
 
-            // Update conversation
-            $conversation->update(['last_message_at' => now(),]);
+                    $conversation->update(['last_message_at' => now(),]);
 
-            DB::commit();
+                    return $conversation;
+                }
+            );
 
-            return redirect()->route('show', $conversation->id);
+            return redirect()->route('chat.show', $conversation)
+                             ->with('success', 'Message sent successfully.');
 
         }
-        catch(Exception $e){
+        catch(Exception $exception){
+            
+            Log::error('Chat message failed.', [
+                'user_id' => Auth::id(),
+                'message' => $request->message,
+                'error'   => $exception->getMessage(),
+            ]);
 
-            DB::rollBack();
-
-            return redirect()->route('show', $conversation->id);
+            return back()->withInput()->with('error', 'Something went wrong. Please try again.');
         }
     }
 }

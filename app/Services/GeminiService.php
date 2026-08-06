@@ -9,13 +9,11 @@ class GeminiService {
     public function generateResponse(string $message): string{
         $apiKey = config('services.gemini.api_key');
 
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}";
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={$apiKey}";
 
-        $response = Http::withoutVerifying()
-        ->withHeaders([
-            'Content-Type' => 'application/json',
-        ])
+        $response = Http::acceptJson()
         ->timeout(30)
+        ->retry(3, 1000)
         ->post($url, [
             'contents' => [
                 [
@@ -30,12 +28,15 @@ class GeminiService {
 
         // Check API response
         if(! $response->successful()){
-            throw new Exception('Failed to get response from Gemini API.');
+            throw new Exception(
+                'Gemini API Error: ' . $response->body()
+            );
         }
 
-        $data = $response->json();
-
-        return $data['candidates'][0]['content']['parts'][0]['text']
-            ?? 'Sorry, I could not generate a response.';
+        return data_get(
+            $response->json(),
+            'candidates.0.content.parts.0.text',
+            'Sorry, I could not generate a response.'
+        );
     }
 }
